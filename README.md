@@ -1,30 +1,130 @@
-# React + TypeScript + Vite
+# 🚀 PromptsManager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Gerencie seus prompts como ativos, não como textos soltos.
 
-Currently, two official plugins are available:
+O **PromptsManager** é uma aplicação para organizar, categorizar e reutilizar prompts usados com IA.
+Se você trabalha com ChatGPT, Copilot ou qualquer modelo generativo, sabe que bons prompts se acumulam — e se perdem.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Esse projeto resolve isso.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 🧠 O Problema
 
-- Configure the top-level `parserOptions` property like this:
+Quem usa IA profissionalmente:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+* Espalha prompts em Notion, bloco de notas, README e histórico de chat
+* Perde tempo recriando prompts que já funcionavam
+* Não tem controle de versões
+* Não consegue estruturar conhecimento acumulado
+
+Prompt bom não deveria depender de memória.
+
+---
+
+## 🎯 A Solução
+
+O PromptsManager centraliza seus prompts em um único lugar, permitindo:
+
+* 📂 Criar e salvar prompts
+* 🏷️ Organizar por categorias
+* 🔎 Buscar rapidamente
+* ♻️ Reutilizar facilmente
+* 🧩 Estruturar sua estratégia de IA
+
+A ideia é simples: tratar prompts como código reutilizável.
+
+---
+
+## 🏗️ Estrutura do Projeto
+
+*(Ajuste essa parte conforme o stack real do projeto)*
+
+```
+/src
+  /components
+  /pages
+  /services
+  /utils
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Arquitetura pensada para facilitar expansão futura.
+
+---
+
+## 🚀 Instalação
+
+Clone o repositório:
+
+```bash
+git clone https://github.com/IamThiago-IT/PromptsManager.git
+```
+
+Entre na pasta do projeto:
+
+```bash
+cd PromptsManager
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Execute o projeto:
+
+```bash
+npm run dev
+```
+
+---
+
+## 📌 Roadmap
+
+* [ ] Sistema de tags avançado
+* [ ] Versionamento de prompts
+* [ ] Exportação e importação de coleções
+* [ ] Compartilhamento público
+* [ ] Integração com APIs de IA
+* [ ] Backup automático
+
+---
+
+## 🧩 Casos de Uso
+
+* Desenvolvedor organizando prompts técnicos
+* Criador salvando templates de conteúdo
+* Estudante estruturando prompts educacionais
+* Profissional automatizando tarefas com IA
+
+---
+
+## 🤝 Contribuição
+
+Se quiser melhorar:
+
+1. Fork o projeto
+2. Crie uma branch (`feature/nome-da-feature`)
+3. Commit suas alterações
+4. Abra um Pull Request
+
+Issues são bem-vindas.
+
+---
+
+## 📄 Licença
+
+Defina aqui a licença escolhida (MIT, Apache, etc).
+
+---
+
+## 🔥 Por que isso importa?
+
+IA é multiplicador de produtividade.
+Mas produtividade sem organização vira retrabalho.
+
+Se você usa IA todo dia e ainda salva prompt em bloco de notas, está operando abaixo do seu potencial.
+
+Prompts são ativos.
+Gerencie como tal.
