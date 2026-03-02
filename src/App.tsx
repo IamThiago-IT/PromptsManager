@@ -4,8 +4,6 @@ import PromptEditor from "./components/PromptEditor";
 import "./index.css";
 import "./categories.css";
 
-const WEB_STORAGE_KEY = "prompts_storage_web";
-
 type PromptVersion = {
   id: string;
   title: string;
@@ -53,6 +51,38 @@ function isStoredPrompt(value: unknown): value is StoredPrompt {
     typeof prompt.title === "string" &&
     typeof prompt.content === "string"
   );
+}
+
+async function loadPromptsFromWebApi(): Promise<StoredPrompt[]> {
+  const response = await fetch("/api/prompts", {
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Falha ao carregar prompts.json (${response.status})`);
+  }
+
+  const payload: unknown = await response.json();
+  if (!Array.isArray(payload)) {
+    return [];
+  }
+
+  return payload.filter((item) => isStoredPrompt(item));
+}
+
+async function savePromptsToWebApi(prompts: Prompt[]): Promise<void> {
+  const response = await fetch("/api/prompts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(prompts),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Falha ao salvar prompts.json (${response.status})`);
+  }
 }
 
 function createVersionId(): string {
@@ -165,34 +195,17 @@ export default function App() {
     async function loadPrompts() {
       if (!hasElectronPromptStorage()) {
         try {
-          const raw = localStorage.getItem(WEB_STORAGE_KEY);
-          if (!raw) {
-            if (isMounted) {
-              setPrompts([]);
-              setIsStorageReady(true);
-            }
-            return;
-          }
-
-          const parsed: unknown = JSON.parse(raw);
-          if (!Array.isArray(parsed)) {
-            if (isMounted) {
-              setPrompts([]);
-              setIsStorageReady(true);
-            }
-            return;
-          }
-
-          const normalized = parsed
-            .filter((item) => isStoredPrompt(item))
-            .map((prompt) => normalizePrompt(prompt));
+          const loadedPrompts = await loadPromptsFromWebApi();
+          const normalized = loadedPrompts.map((prompt) =>
+            normalizePrompt(prompt)
+          );
 
           if (isMounted) {
             setPrompts(normalized);
             setIsStorageReady(true);
           }
         } catch (error) {
-          console.error("Falha ao carregar prompts do navegador", error);
+          console.error("Falha ao carregar prompts.json no modo web", error);
           if (isMounted) {
             setPrompts([]);
             setIsStorageReady(true);
@@ -229,7 +242,9 @@ export default function App() {
   useEffect(() => {
     if (!isStorageReady) return;
     if (!hasElectronPromptStorage()) {
-      localStorage.setItem(WEB_STORAGE_KEY, JSON.stringify(prompts));
+      void savePromptsToWebApi(prompts).catch((error) => {
+        console.error("Falha ao salvar prompts.json no modo web", error);
+      });
       return;
     }
 
