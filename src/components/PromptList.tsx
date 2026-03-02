@@ -1,16 +1,41 @@
-import { Trash } from 'lucide-react';
+import { Trash } from "lucide-react";
 
-export default function PromptList({ prompts, onSelect, onDelete }: { prompts: any[], onSelect: (id: string) => void, onDelete: (id: string) => void }) {
+type Prompt = {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  versions: {
+    id: string;
+    title: string;
+    content: string;
+    category: string;
+    savedAt: string;
+  }[];
+};
+
+export default function PromptList({
+  prompts,
+  onSelect,
+  onDelete,
+}: {
+  prompts: Prompt[];
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
+}) {
   return (
     <ul className="prompt-list">
       {prompts.map((p) => (
-        <li
-          key={p.id}
-          className="prompt-item"
-          onClick={() => onSelect(p.id)}
-        >
+        <li key={p.id} className="prompt-item" onClick={() => onSelect(p.id)}>
           <div className="prompt-item-content">
-            <span className="prompt-item-title">{p.title}</span>
+            <div className="prompt-item-header">
+              <span className="prompt-item-title">{p.title}</span>
+              <div className="prompt-meta-pills">
+                <span className="prompt-category-pill">{p.category}</span>
+                <span className="prompt-version-pill">{p.versions.length}v</span>
+              </div>
+            </div>
+
             <span className="prompt-item-description">
               {p.content.replace(/<[^>]*>?/gm, "").slice(0, 50)}...
             </span>

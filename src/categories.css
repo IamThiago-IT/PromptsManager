@@ -1,0 +1,136 @@
+.editor-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray-100);
+}
+
+.category-input,
+.category-select {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--white);
+  padding: 0 12px;
+  outline: none;
+}
+
+.category-input::placeholder {
+  color: var(--gray-100);
+}
+
+.category-select {
+  appearance: none;
+}
+
+.prompt-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prompt-item-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.prompt-meta-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prompt-category-pill {
+  font-size: 11px;
+  color: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 999px;
+  padding: 2px 8px;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prompt-version-pill {
+  font-size: 11px;
+  color: #9db3ff;
+  border: 1px solid rgba(157, 179, 255, 0.45);
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.version-panel {
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.version-panel-header {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-100);
+  margin-bottom: 8px;
+}
+
+.version-empty {
+  color: var(--gray-100);
+  font-size: 13px;
+}
+
+.version-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.version-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid var(--gray-700);
+  border-radius: 6px;
+}
+
+.version-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.version-item-meta span,
+.version-item-meta small {
+  color: var(--gray-100);
+  font-size: 12px;
+}
+
+.version-restore-btn {
+  border: 1px solid var(--accent-500);
+  background: transparent;
+  color: var(--white);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.version-restore-btn:hover {
+  background: rgba(72, 99, 247, 0.16);
+}
