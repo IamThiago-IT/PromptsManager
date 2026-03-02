@@ -5,6 +5,15 @@ type Prompt = {
   title: string
   content: string
   category?: string
+  versions?: PromptVersion[]
+}
+
+type PromptVersion = {
+  id: string
+  title: string
+  content: string
+  category?: string
+  savedAt?: string
 }
 
 // --------- Expose some API to the Renderer process ---------

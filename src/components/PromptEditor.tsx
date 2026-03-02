@@ -1,22 +1,39 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Copy } from "lucide-react";
+
+type PromptVersion = {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  savedAt: string;
+};
 
 type Prompt = {
   id: string;
   title: string;
   content: string;
   category: string;
+  versions: PromptVersion[];
 };
+
+function formatVersionDate(value: string): string {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return parsed.toLocaleString("pt-BR");
+}
 
 export default function PromptEditor({
   prompt,
   categories,
   onSave,
+  onRestoreVersion,
   onCopy,
 }: {
   prompt: Prompt | null;
   categories: string[];
   onSave: (title: string, content: string, category: string) => void;
+  onRestoreVersion: (versionId: string) => void;
   onCopy: () => void;
 }) {
   const [title, setTitle] = useState("");
@@ -24,6 +41,11 @@ export default function PromptEditor({
   const [category, setCategory] = useState("Sem categoria");
   const titleRef = useRef<HTMLHeadingElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const versions = useMemo(
+    () => (prompt?.versions ? [...prompt.versions].reverse() : []),
+    [prompt]
+  );
 
   useEffect(() => {
     const nextTitle = prompt?.title || "";
@@ -77,6 +99,39 @@ export default function PromptEditor({
             <option key={item} value={item} />
           ))}
         </datalist>
+      </div>
+
+      <div className="version-panel">
+        <div className="version-panel-header">
+          <span>Versoes ({prompt?.versions.length || 0})</span>
+        </div>
+
+        {!prompt && (
+          <p className="version-empty">
+            Salve o prompt para comecar o historico de versoes.
+          </p>
+        )}
+
+        {prompt && versions.length > 0 && (
+          <ul className="version-list">
+            {versions.map((version, index) => (
+              <li key={version.id} className="version-item">
+                <div className="version-item-meta">
+                  <strong>v{versions.length - index}</strong>
+                  <span>{formatVersionDate(version.savedAt)}</span>
+                  <small>{version.category}</small>
+                </div>
+                <button
+                  type="button"
+                  className="version-restore-btn"
+                  onClick={() => onRestoreVersion(version.id)}
+                >
+                  Restaurar
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div

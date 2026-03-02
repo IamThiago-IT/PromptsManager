@@ -6,6 +6,13 @@ type Prompt = {
   title: string;
   content: string;
   category: string;
+  versions: {
+    id: string;
+    title: string;
+    content: string;
+    category: string;
+    savedAt: string;
+  }[];
 };
 
 export default function Sidebar({

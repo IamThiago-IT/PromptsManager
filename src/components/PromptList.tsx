@@ -5,6 +5,13 @@ type Prompt = {
   title: string;
   content: string;
   category: string;
+  versions: {
+    id: string;
+    title: string;
+    content: string;
+    category: string;
+    savedAt: string;
+  }[];
 };
 
 export default function PromptList({
@@ -23,7 +30,10 @@ export default function PromptList({
           <div className="prompt-item-content">
             <div className="prompt-item-header">
               <span className="prompt-item-title">{p.title}</span>
-              <span className="prompt-category-pill">{p.category}</span>
+              <div className="prompt-meta-pills">
+                <span className="prompt-category-pill">{p.category}</span>
+                <span className="prompt-version-pill">{p.versions.length}v</span>
+              </div>
             </div>
 
             <span className="prompt-item-description">

@@ -9,6 +9,15 @@ const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
 let win;
+function isPromptVersionArray(value) {
+  return Array.isArray(value) && value.every((item) => {
+    if (typeof item !== "object" || item === null) {
+      return false;
+    }
+    const version = item;
+    return typeof version.id === "string" && typeof version.title === "string" && typeof version.content === "string" && (version.category === void 0 || typeof version.category === "string") && (version.savedAt === void 0 || typeof version.savedAt === "string");
+  });
+}
 function getPromptsFilePath() {
   if (app.isPackaged) {
     return path.join(path.dirname(app.getPath("exe")), "prompts.json");
@@ -21,7 +30,7 @@ function isPromptArray(value) {
       return false;
     }
     const prompt = item;
-    return typeof prompt.id === "string" && typeof prompt.title === "string" && typeof prompt.content === "string" && (prompt.category === void 0 || typeof prompt.category === "string");
+    return typeof prompt.id === "string" && typeof prompt.title === "string" && typeof prompt.content === "string" && (prompt.category === void 0 || typeof prompt.category === "string") && (prompt.versions === void 0 || isPromptVersionArray(prompt.versions));
   });
 }
 async function loadPrompts() {

@@ -20,6 +20,32 @@ type Prompt = {
   title: string
   content: string
   category?: string
+  versions?: PromptVersion[]
+}
+
+type PromptVersion = {
+  id: string
+  title: string
+  content: string
+  category?: string
+  savedAt?: string
+}
+
+function isPromptVersionArray(value: unknown): value is PromptVersion[] {
+  return Array.isArray(value) && value.every((item) => {
+    if (typeof item !== 'object' || item === null) {
+      return false
+    }
+
+    const version = item as Record<string, unknown>
+    return (
+      typeof version.id === 'string' &&
+      typeof version.title === 'string' &&
+      typeof version.content === 'string' &&
+      (version.category === undefined || typeof version.category === 'string') &&
+      (version.savedAt === undefined || typeof version.savedAt === 'string')
+    )
+  })
 }
 
 function getPromptsFilePath(): string {
@@ -41,7 +67,8 @@ function isPromptArray(value: unknown): value is Prompt[] {
       typeof prompt.id === 'string' &&
       typeof prompt.title === 'string' &&
       typeof prompt.content === 'string' &&
-      (prompt.category === undefined || typeof prompt.category === 'string')
+      (prompt.category === undefined || typeof prompt.category === 'string') &&
+      (prompt.versions === undefined || isPromptVersionArray(prompt.versions))
     )
   })
 }
