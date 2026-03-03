@@ -1,6 +1,15 @@
 import { ipcRenderer, contextBridge } from 'electron'
 
-// --------- Expose some API to the Renderer process ---------
+// Expose typed API to the Renderer process
+contextBridge.exposeInMainWorld('electronAPI', {
+  loadPrompts: () => ipcRenderer.invoke('prompts:load'),
+  savePrompts: (prompts: any[]) => ipcRenderer.invoke('prompts:save', prompts),
+  createBackup: () => ipcRenderer.invoke('prompts:backup'),
+  exportPrompts: (prompts: any[], format: string) =>
+    ipcRenderer.invoke('prompts:export', prompts, format),
+})
+
+// Keep backward compat for ipcRenderer (can be removed later)
 contextBridge.exposeInMainWorld('ipcRenderer', {
   on(...args: Parameters<typeof ipcRenderer.on>) {
     const [channel, listener] = args
@@ -18,7 +27,4 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     const [channel, ...omit] = args
     return ipcRenderer.invoke(channel, ...omit)
   },
-
-  // You can expose other APTs you need here.
-  // ...
 })
