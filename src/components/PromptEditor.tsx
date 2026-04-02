@@ -6,11 +6,11 @@ import MarkdownPreview from './MarkdownPreview';
 interface PromptEditorProps {
   prompt: Prompt | null;
   onSave: (title: string, content: string, category: string, tags: string[]) => void;
+  onAutoSave?: (title: string, content: string, category: string, tags: string[]) => void;
   onCopy: () => void;
   categories: string[];
 }
 
-// Simple undo/redo hook
 function useHistory(initial: string) {
   const [history, setHistory] = useState<string[]>([initial]);
   const [index, setIndex] = useState(0);
@@ -21,7 +21,6 @@ function useHistory(initial: string) {
     setHistory((prev) => {
       const newHistory = prev.slice(0, index + 1);
       newHistory.push(value);
-      // Keep max 100 entries
       if (newHistory.length > 100) newHistory.shift();
       return newHistory;
     });
@@ -47,7 +46,6 @@ function useHistory(initial: string) {
   return { current, push, undo, redo, reset, canUndo, canRedo };
 }
 
-// Replace template variables like {{name}} with highlighted spans
 function highlightTemplateVars(text: string): string {
   return text.replace(
     /\{\{(\w+)\}\}/g,
@@ -55,16 +53,17 @@ function highlightTemplateVars(text: string): string {
   );
 }
 
-export default function PromptEditor({ prompt, onSave, onCopy, categories }: PromptEditorProps) {
+export default function PromptEditor({ prompt, onSave, onAutoSave, onCopy, categories }: PromptEditorProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [isPreview, setIsPreview] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const contentHistory = useHistory("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const autoSaveRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     setTitle(prompt?.title || "");
@@ -74,15 +73,26 @@ export default function PromptEditor({ prompt, onSave, onCopy, categories }: Pro
     setIsPreview(false);
     setNewCategory("");
     setTagInput("");
-  }, [prompt?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+    setSaveStatus('idle');
+  }, [prompt?.id]);
 
-  const handleContentChange = (value: string) => {
-    // Debounced push to history
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      contentHistory.push(value);
-    }, 500);
-  };
+  const effectiveCategoryValue = newCategory.trim() || category;
+
+  useEffect(() => {
+    if (!prompt || !onAutoSave) return;
+    if (autoSaveRef.current) clearTimeout(autoSaveRef.current);
+
+    setSaveStatus('saving');
+    autoSaveRef.current = setTimeout(() => {
+      onAutoSave(title, contentHistory.current, effectiveCategoryValue, tags);
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    }, 2000);
+
+    return () => {
+      if (autoSaveRef.current) clearTimeout(autoSaveRef.current);
+    };
+  }, [title, contentHistory.current, effectiveCategoryValue, tags, prompt, onAutoSave]);
 
   const handleAddTag = () => {
     const tag = tagInput.trim().toLowerCase();
@@ -103,17 +113,14 @@ export default function PromptEditor({ prompt, onSave, onCopy, categories }: Pro
     }
   };
 
-  const effectiveCategory = newCategory.trim() || category;
-
   const handleSave = () => {
-    onSave(title, contentHistory.current, effectiveCategory, tags);
+    onSave(title, contentHistory.current, effectiveCategoryValue, tags);
     if (newCategory.trim()) {
       setCategory(newCategory.trim());
       setNewCategory("");
     }
   };
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -131,7 +138,7 @@ export default function PromptEditor({ prompt, onSave, onCopy, categories }: Pro
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }); // eslint-disable-line react-hooks/exhaustive-deps
+  });
 
   const previewContent = highlightTemplateVars(contentHistory.current);
 
@@ -173,6 +180,11 @@ export default function PromptEditor({ prompt, onSave, onCopy, categories }: Pro
         </div>
 
         <div className="header-actions">
+          {saveStatus !== 'idle' && (
+            <span className="save-status">
+              {saveStatus === 'saving' ? 'Salvando...' : 'Salvo!'}
+            </span>
+          )}
           <button className="btn-outline btn" onClick={onCopy}>
             <Copy className="icon" />
             <span>Copiar</span>
@@ -184,7 +196,6 @@ export default function PromptEditor({ prompt, onSave, onCopy, categories }: Pro
         </div>
       </header>
 
-      {/* Title */}
       <input
         type="text"
         className="prompt-title-input"
@@ -193,7 +204,6 @@ export default function PromptEditor({ prompt, onSave, onCopy, categories }: Pro
         onChange={(e) => setTitle(e.target.value)}
       />
 
-      {/* Category & Tags */}
       <div className="editor-meta">
         <div className="meta-row">
           <label className="meta-label">Categoria:</label>
@@ -245,7 +255,6 @@ export default function PromptEditor({ prompt, onSave, onCopy, categories }: Pro
         </div>
       </div>
 
-      {/* Content - Edit or Preview */}
       {isPreview ? (
         <div className="prompt-content-preview">
           <MarkdownPreview content={previewContent} />
@@ -256,11 +265,7 @@ export default function PromptEditor({ prompt, onSave, onCopy, categories }: Pro
           className="prompt-content-textarea"
           placeholder="Conteúdo do prompt...&#10;&#10;Use Markdown para formatação.&#10;Use {{variavel}} para placeholders de template."
           value={contentHistory.current}
-          onChange={(e) => {
-            handleContentChange(e.target.value);
-            // Immediate visual update via direct state manipulation
-            contentHistory.push(e.target.value);
-          }}
+          onChange={(e) => contentHistory.push(e.target.value)}
         />
       )}
     </main>

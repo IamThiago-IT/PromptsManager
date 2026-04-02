@@ -72,6 +72,12 @@ body {
   align-items: center;
 }
 
+.save-status {
+  font-size: 12px;
+  color: var(--gray-100);
+  min-width: 70px;
+}
+
 /* ===== Buttons ===== */
 .btn {
   gap: 8px;

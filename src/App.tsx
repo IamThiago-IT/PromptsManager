@@ -80,10 +80,30 @@ export default function App() {
         setPrompts((prev) => [newPrompt, ...prev]);
         setSelected(newPrompt);
       }
-
-      addToast("Prompt salvo com sucesso!", "success");
     },
-    [selected, addToast]
+    [selected]
+  );
+
+  const handleAutoSave = useCallback(
+    (title: string, content: string, category: string, tags: string[]) => {
+      if (!title.trim()) return;
+
+      if (selected) {
+        const updated: Prompt = {
+          ...selected,
+          title,
+          content,
+          category,
+          tags,
+          updatedAt: Date.now(),
+        };
+        setPrompts((prev) =>
+          prev.map((p) => (p.id === selected.id ? updated : p))
+        );
+        setSelected(updated);
+      }
+    },
+    [selected]
   );
 
   const handleDeleteRequest = useCallback((id: string) => {
@@ -252,6 +272,7 @@ export default function App() {
       <PromptEditor
         prompt={selected}
         onSave={handleSave}
+        onAutoSave={handleAutoSave}
         onCopy={handleCopy}
         categories={allCategories}
       />
