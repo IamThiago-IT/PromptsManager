@@ -27,7 +27,7 @@ Prompt bom não deveria depender de memória.
 O PromptsManager centraliza seus prompts em um único lugar, permitindo:
 
 * 📂 Criar e salvar prompts
-* 🏷️ Organizar por categorias
+* 🏷️ Organizar por categorias e tags
 * 🔎 Buscar rapidamente
 * ♻️ Reutilizar facilmente
 * 🧩 Estruturar sua estratégia de IA
@@ -38,17 +38,32 @@ A ideia é simples: tratar prompts como código reutilizável.
 
 ## 🏗️ Estrutura do Projeto
 
-*(Ajuste essa parte conforme o stack real do projeto)*
-
 ```
 /src
-  /components
-  /pages
-  /services
-  /utils
+  /components      # Sidebar, PromptEditor, PromptList, MarkdownPreview, etc.
+  /services        # storage.ts (localStorage + Electron IPC)
+  /hooks           # useToast.ts
+  /types           # Prompt.ts
+  App.tsx          # Componente principal
 ```
 
-Arquitetura pensada para facilitar expansão futura.
+---
+
+## ✨ Funcionalidades
+
+- **CRUD completo** - Criar, editar e excluir prompts
+- **Categorias e Tags** - Organize seus prompts com múltiplas tags
+- **Favoritos** - Marque seus prompts preferidos
+- **Busca e Filtros** - Filtre por categoria, tag ou texto
+- **Ordenação** - Por data (recente/antigo), título (A-Z/Z-A) ou favoritos
+- **Auto-save** - Salvamento automático após 2 segundos de inatividade
+- **Undo/Redo** - Histórico de edições no editor (Ctrl+Z / Ctrl+Y)
+- **Preview Markdown** - Visualize o conteúdo formatado
+- **Variáveis de Template** - Suporte a `{{variavel}}` com highlight
+- **Importar/Exportar** - JSON e Markdown
+- **Backup** - Exporte todos os dados
+- **Interface responsiva** - Funciona em desktop e web
+- **Modo Desktop** - Versão Electron para desktop
 
 ---
 
@@ -78,16 +93,31 @@ Execute o projeto:
 npm run dev
 ```
 
+### Scripts disponíveis
+
+| Script | Descrição |
+|--------|-----------|
+| `npm run dev` | Iniciar desenvolvimento |
+| `npm run dev:web` | Modo web only |
+| `npm run dev:desktop` | Modo desktop (Electron) |
+| `npm run build:web` | Build para web |
+| `npm run build:desktop` | Build desktop (Electron) |
+| `npm run lint` | Verificar código |
+
 ---
 
 ## 📌 Roadmap
 
-* [ ] Sistema de tags avançado
-* [ ] Versionamento de prompts
-* [ ] Exportação e importação de coleções
-* [ ] Compartilhamento público
-* [ ] Integração com APIs de IA
-* [ ] Backup automático
+- [x] Sistema de categorias
+- [x] Sistema de tags
+- [x] Busca e filtros
+- [x] Ordenação (data, título, favoritos)
+- [x] Exportação e importação (JSON/Markdown)
+- [x] Auto-save
+- [ ] Versionamento de prompts
+- [ ] Backup automático na nuvem
+- [ ] Compartilhamento público
+- [ ] Integração com APIs de IA
 
 ---
 
@@ -115,7 +145,7 @@ Issues são bem-vindas.
 
 ## 📄 Licença
 
-Defina aqui a licença escolhida (MIT, Apache, etc).
+MIT License
 
 ---
 
