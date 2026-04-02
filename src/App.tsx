@@ -147,10 +147,6 @@ export default function App() {
     []
   );
 
-  const handleReorder = useCallback((reorderedPrompts: Prompt[]) => {
-    setPrompts(reorderedPrompts);
-  }, []);
-
   const handleCopy = useCallback(() => {
     if (selected?.content) {
       navigator.clipboard.writeText(selected.content);
