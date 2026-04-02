@@ -57,8 +57,8 @@ export default function App() {
 
   const handleSave = useCallback(
     (title: string, content: string, category: string, tags: string[]) => {
-      if (!title.trim() || !content.trim()) {
-        addToast("Título e conteúdo não podem estar vazios.", "error");
+      if (!title.trim()) {
+        addToast("Título não pode estar vazio.", "error");
         return;
       }
 
